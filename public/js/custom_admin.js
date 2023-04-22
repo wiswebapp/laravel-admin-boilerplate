@@ -95,8 +95,9 @@ function removeDataFromDatabase(deleteUrl, id, csrf) {
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
+        icon: 'warning',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
         confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
         if (result.value) {
@@ -110,8 +111,11 @@ function removeDataFromDatabase(deleteUrl, id, csrf) {
                 data: {
                     _method: 'DELETE'
                 },
+                beforeSend: function() {
+                    Swal.fire('Please wait..','While we are removing your data !','info')
+                },
                 success : function(response) {
-                    Swal.fire('Deleted !','Data has been removed successfully !','success')
+                    Swal.fire('Deleted','Data has been removed successfully !','success')
                     $('#data-table').DataTable().ajax.reload();
                 },
                 error: function(XMLHttpRequest, textStatus, errorThrown) {
