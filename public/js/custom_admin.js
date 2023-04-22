@@ -32,6 +32,7 @@ function generateDataTable(dataUrl, coloumnsData, filterData = [], coloumnsToExp
     var dtTable = $('#data-table').DataTable({
         processing: true,
         serverSide: true,
+        pageLength: 15,
         ajax: {
             url: dataUrl,
             data: function (d) {
