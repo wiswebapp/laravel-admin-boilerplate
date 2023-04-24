@@ -20,7 +20,8 @@ class DashboardController extends Controller
     public function index(): View
     {
         return view('admin.dashboard', [
-            'data' => $this->dashboardRepository->getDashboardData()
+            'data' => $this->dashboardRepository->getDashboardData(),
+            'chartData' => $this->dashboardRepository->getDashboardChartData()
         ]);
     }
 

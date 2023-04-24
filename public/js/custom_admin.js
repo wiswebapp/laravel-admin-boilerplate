@@ -125,3 +125,68 @@ function removeDataFromDatabase(deleteUrl, id, csrf) {
         }
     });
 }
+
+
+/**
+ * Function to generate the pie chart
+ *
+ * @param string chartElement
+ * @param array chartLabel
+ * @param array chartData
+ */
+function generatPieChart(chartElement, chartLabel, chartData) {
+    var pieChartCanvas = $('#' + chartElement).get(0).getContext('2d');
+
+    new Chart(pieChartCanvas, {
+        type: 'pie',
+        data: {
+            labels: chartLabel,
+            datasets: chartData
+        },
+        options: {
+            maintainAspectRatio : false,
+            responsive : true,
+        }
+    });
+}
+
+/**
+ * Function to generate the bar chart
+ *
+ * @param string chartElement
+ * @param array chartLabel
+ * @param array chartData
+ */
+function generatBarChart(chartElement, chartLabel, chartData) {
+    var chartDataSet = [];
+    var barChartCanvas = $('#' + chartElement).get(0).getContext('2d');
+
+    chartData.forEach(function(row) {
+        chartDataSet.push({
+            label               : row.name,
+            backgroundColor     : row.background,
+            borderColor         : 'rgba(60,141,188,0.8)',
+            pointRadius          : false,
+            pointColor          : '#3b8bba',
+            pointStrokeColor    : 'rgba(60,141,188,1)',
+            pointHighlightFill  : '#fff',
+            pointHighlightStroke: 'rgba(60,141,188,1)',
+            data                : row.value
+        })
+    })
+
+    var barChartData = $.extend(true, {}, {
+        labels: chartLabel,
+        datasets: chartDataSet
+    })
+
+    new Chart(barChartCanvas, {
+        type: 'bar',
+        data: barChartData,
+        options: {
+            responsive              : true,
+            maintainAspectRatio     : false,
+            datasetFill             : false
+        }
+    })
+}
