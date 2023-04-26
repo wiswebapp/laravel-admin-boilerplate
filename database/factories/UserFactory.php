@@ -3,7 +3,7 @@
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\User>
@@ -11,18 +11,39 @@ use Illuminate\Support\Str;
 class UserFactory extends Factory
 {
     /**
+     * Convert the number in indian format.
+     *
+     * @return string
+     */
+    public function convertToIndianFormat($number)
+    {
+        $number = str_replace('-', '', $number);
+        $number = str_replace('.', '', $number);
+        $number = str_replace('(', '', $number);
+        $number = str_replace(')', '', $number);
+        $number = str_replace('+', '', $number);
+        $number = str_replace(' ', '', $number);
+
+        return strlen($number) > 10 ? substr($number, 0, 9) : $number;
+    }
+
+    /**
      * Define the model's default state.
      *
      * @return array
      */
     public function definition()
     {
+        $status = ['Active', 'InActive'];
+
         return [
             'name' => $this->faker->name(),
-            'email' => $this->faker->unique()->safeEmail(),
+            'phone' => $this->convertToIndianFormat($this->faker->phoneNumber()),
+            'email' => 'user_'. bin2hex(random_bytes(16)) . '@test.com',
             'email_verified_at' => now(),
-            'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'remember_token' => Str::random(10),
+            'password' => Hash::make('123456'),
+            'remember_token' => null,
+            'status' => $status[rand(0, 1)],
         ];
     }
 

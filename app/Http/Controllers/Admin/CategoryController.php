@@ -112,7 +112,7 @@ class CategoryController extends Controller
             $this->fileService->removeFile(Category::UPLOAD_PATH, $category->image);
         }
 
-        $category->delete();
+        $this->categoryRepository->delete($category->id);
         return redirect(route('admin.category.index'))->with('success', 'Data Deleted Successfully !');
     }
 }

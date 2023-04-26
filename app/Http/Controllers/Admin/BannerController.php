@@ -106,7 +106,7 @@ class BannerController extends Controller
             $this->fileService->removeFile(Banner::UPLOAD_PATH, $banner->image);
         }
 
-        $banner->delete();
+        $this->bannerRepository->delete($banner->id);
         return redirect(route('admin.banner.index'))->with('success', 'Data Deleted Successfully !');
     }
 }

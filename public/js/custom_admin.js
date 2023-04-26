@@ -32,6 +32,7 @@ function generateDataTable(dataUrl, coloumnsData, filterData = [], coloumnsToExp
     var dtTable = $('#data-table').DataTable({
         processing: true,
         serverSide: true,
+        pageLength: 15,
         ajax: {
             url: dataUrl,
             data: function (d) {
@@ -94,8 +95,9 @@ function removeDataFromDatabase(deleteUrl, id, csrf) {
         title: 'Are you sure?',
         text: "You won't be able to revert this!",
         showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
+        icon: 'warning',
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
         confirmButtonText: 'Yes, delete it!'
     }).then((result) => {
         if (result.value) {
@@ -109,8 +111,11 @@ function removeDataFromDatabase(deleteUrl, id, csrf) {
                 data: {
                     _method: 'DELETE'
                 },
+                beforeSend: function() {
+                    Swal.fire('Please wait..','While we are removing your data !','info')
+                },
                 success : function(response) {
-                    Swal.fire('Deleted !','Data has been removed successfully !','success')
+                    Swal.fire('Deleted','Data has been removed successfully !','success')
                     $('#data-table').DataTable().ajax.reload();
                 },
                 error: function(XMLHttpRequest, textStatus, errorThrown) {
@@ -119,4 +124,69 @@ function removeDataFromDatabase(deleteUrl, id, csrf) {
             });
         }
     });
+}
+
+
+/**
+ * Function to generate the pie chart
+ *
+ * @param string chartElement
+ * @param array chartLabel
+ * @param array chartData
+ */
+function generatPieChart(chartElement, chartLabel, chartData) {
+    var pieChartCanvas = $('#' + chartElement).get(0).getContext('2d');
+
+    new Chart(pieChartCanvas, {
+        type: 'pie',
+        data: {
+            labels: chartLabel,
+            datasets: chartData
+        },
+        options: {
+            maintainAspectRatio : false,
+            responsive : true,
+        }
+    });
+}
+
+/**
+ * Function to generate the bar chart
+ *
+ * @param string chartElement
+ * @param array chartLabel
+ * @param array chartData
+ */
+function generatBarChart(chartElement, chartLabel, chartData) {
+    var chartDataSet = [];
+    var barChartCanvas = $('#' + chartElement).get(0).getContext('2d');
+
+    chartData.forEach(function(row) {
+        chartDataSet.push({
+            label               : row.name,
+            backgroundColor     : row.background,
+            borderColor         : 'rgba(60,141,188,0.8)',
+            pointRadius          : false,
+            pointColor          : '#3b8bba',
+            pointStrokeColor    : 'rgba(60,141,188,1)',
+            pointHighlightFill  : '#fff',
+            pointHighlightStroke: 'rgba(60,141,188,1)',
+            data                : row.value
+        })
+    })
+
+    var barChartData = $.extend(true, {}, {
+        labels: chartLabel,
+        datasets: chartDataSet
+    })
+
+    new Chart(barChartCanvas, {
+        type: 'bar',
+        data: barChartData,
+        options: {
+            responsive              : true,
+            maintainAspectRatio     : false,
+            datasetFill             : false
+        }
+    })
 }
