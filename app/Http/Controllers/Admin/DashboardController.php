@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use App\Repositories\Admin\DashboardRepository;
 use Illuminate\Contracts\View\View;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -12,9 +13,16 @@ use Illuminate\Validation\Rule;
 
 class DashboardController extends Controller
 {
+    public function __construct(private DashboardRepository $dashboardRepository) {
+        $this->dashboardRepository = $dashboardRepository;
+    }
+
     public function index(): View
     {
-        return view('admin.dashboard');
+        return view('admin.dashboard', [
+            'data' => $this->dashboardRepository->getDashboardData(),
+            'chartData' => $this->dashboardRepository->getDashboardChartData()
+        ]);
     }
 
     public function profile(): View
